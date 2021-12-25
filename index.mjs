@@ -95,23 +95,35 @@ const getRemainingPairs = async () => {
   );
 };
 
-let hasMoreFunds = true;
-let count = 30;
-// while (hasMoreFunds && count) {
-//   const pairs = await getRemainingPairs();
+async function buyMoreCoins() {
+  let hasMoreFunds = true;
+  let count = 30;
+  let retries = 10;
+  while ((hasMoreFunds && count) || retries) {
+    const pairs = await getRemainingPairs();
 
-//   if (Object.values(pairs).length <= 0) {
-//     break;
-//   }
+    if (Object.values(pairs).length <= 0) {
+      break;
+    }
 
-//   const pair =
-//     Object.values(pairs)[
-//       Math.floor(Math.random() * Object.values(pairs).length)
-//     ];
+    const pair =
+      Object.values(pairs)[
+        Math.floor(Math.random() * Object.values(pairs).length)
+      ];
 
-//   hasMoreFunds = await addOrder(pair.altname);
-//   count--;
-// }
+    hasMoreFunds = await addOrder(pair.altname);
+    if (!hasMoreFunds) {
+      retries--;
+    }
+    count--;
+  }
+}
 
-const pairs = await getRemainingPairs();
-console.log(pairs);
+async function pairs() {
+  const pairs = await getRemainingPairs();
+  console.log(pairs);
+}
+
+// buyMoreCoins();
+
+pairs();
